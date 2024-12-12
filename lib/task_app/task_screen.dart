@@ -18,6 +18,47 @@ class _TaskScreenState extends State<TaskScreen> {
     super.dispose();
   }
 
+  updateTask(int index) {
+    BlocBuilder<TaskCubit, List<String>>(
+      builder: (context, state) {
+        return ElevatedButton(
+          onPressed: () async {
+            final result = await showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: const Text("Update Task"),
+                  content: TextField(
+                    controller: controller,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context, controller.text);
+                      },
+                      child: const Text("Update"),
+                    ),
+                  ],
+                );
+              },
+            );
+
+            if (result != null) {
+              context
+                  .read<TaskCubit>()
+                  .updateTask(task: state[index], newTask: result);
+              controller.clear();
+            }
+          },
+          child: const Text("Update Task"),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,40 +71,133 @@ class _TaskScreenState extends State<TaskScreen> {
                 title: Text(
                   state[index],
                 ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.update),
+                      onPressed: () {
+                        updateTaskMethod(state, index);
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete_forever),
+                      onPressed: () {},
+                    )
+                  ],
+                ),
               );
             },
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: const Text("Add Task"),
-                  content: TextField(
-                    controller: controller,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          // Floating Button Add
+          FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text("Add Task"),
+                    content: TextField(
+                      controller: controller,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
                     ),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        context
-                            .read<TaskCubit>()
-                            .addTask(task: controller.text);
-                        controller.clear();
-                        Navigator.pop(context);
-                      },
-                      child: const Text("Add"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          context
+                              .read<TaskCubit>()
+                              .addTask(task: controller.text);
+                          controller.clear();
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Add"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+          // Floating Button Remove
+          FloatingActionButton(
+            child: const Icon(Icons.remove),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text("Remove Task"),
+                    content: TextField(
+                      controller: controller,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                      ),
                     ),
-                  ],
-                );
-              });
-        },
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          context
+                              .read<TaskCubit>()
+                              .removeTask(task: controller.text);
+                          controller.clear();
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Remove"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+          // Floating Button Clear
+          FloatingActionButton(
+            child: const Icon(Icons.clear),
+            onPressed: () {
+              context.read<TaskCubit>().clearTask();
+            },
+          ),
+        ],
       ),
+    );
+  }
+
+   // Update Task Method
+  Future<dynamic> updateTaskMethod(
+      List<String> state, int index) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Add Task"),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                context
+                    .read<TaskCubit>()
+                    .updateTask(task: state[index], newTask: controller.text);
+                controller.clear();
+                Navigator.pop(context);
+              },
+              child: const Text("Add"),
+            ),
+          ],
+        );
+      },
     );
   }
 }
