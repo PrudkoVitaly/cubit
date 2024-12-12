@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 
+
 class TaskCubit extends Cubit<List<String>> {
   TaskCubit() : super(["1 task", "2 task"]);
 
@@ -19,4 +20,13 @@ class TaskCubit extends Cubit<List<String>> {
     emit([ ]);
   }
 
+  void reorderTasks(int oldIndex, int newIndex) {
+    final tasks = List<String>.from(state);
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+    final item = tasks.removeAt(oldIndex);
+    tasks.insert(newIndex, item);
+    emit(tasks);
+  }
 }

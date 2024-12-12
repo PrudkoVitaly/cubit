@@ -18,78 +18,89 @@ class _TaskScreenState extends State<TaskScreen> {
     super.dispose();
   }
 
-  updateTask(int index) {
-    BlocBuilder<TaskCubit, List<String>>(
-      builder: (context, state) {
-        return ElevatedButton(
-          onPressed: () async {
-            final result = await showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: const Text("Update Task"),
-                  content: TextField(
-                    controller: controller,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context, controller.text);
-                      },
-                      child: const Text("Update"),
-                    ),
-                  ],
-                );
-              },
-            );
-
-            if (result != null) {
-              context
-                  .read<TaskCubit>()
-                  .updateTask(task: state[index], newTask: result);
-              controller.clear();
-            }
-          },
-          child: const Text("Update Task"),
-        );
-      },
-    );
-  }
+  // updateTask(int index) {
+  //   BlocBuilder<TaskCubit, List<String>>(
+  //     builder: (context, state) {
+  //       return ElevatedButton(
+  //         onPressed: () async {
+  //           final result = await showDialog(
+  //             context: context,
+  //             builder: (context) {
+  //               return AlertDialog(
+  //                 title: const Text("Update Task"),
+  //                 content: TextField(
+  //                   controller: controller,
+  //                   decoration: const InputDecoration(
+  //                     border: OutlineInputBorder(),
+  //                   ),
+  //                 ),
+  //                 actions: [
+  //                   TextButton(
+  //                     onPressed: () {
+  //                       Navigator.pop(context, controller.text);
+  //                     },
+  //                     child: const Text("Update"),
+  //                   ),
+  //                 ],
+  //               );
+  //             },
+  //           );
+  //
+  //           if (result != null) {
+  //             context
+  //                 .read<TaskCubit>()
+  //                 .updateTask(task: state[index], newTask: result);
+  //             controller.clear();
+  //           }
+  //         },
+  //         child: const Text("Update Task"),
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<TaskCubit, List<String>>(
-        builder: (context, state) {
-          return ListView.builder(
-            itemCount: state.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(
-                  state[index],
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.update),
-                      onPressed: () {
-                        updateTaskMethod(state, index);
-                      },
+      body: SafeArea(
+        child: BlocBuilder<TaskCubit, List<String>>(
+          builder: (context, state) {
+            return ReorderableListView(
+              onReorder: (oldIndex, newIndex) {
+                context.read<TaskCubit>().reorderTasks(oldIndex, newIndex);
+              },
+              children: [
+                for (int index = 0; index < state.length; index++)
+                  ListTile(
+                    key: ValueKey(index),
+                    tileColor: index % 2 == 0 ? Colors.blue[50] : Colors.white,
+                    title: Text(
+                      state[index],
                     ),
-                    IconButton(
-                      icon: Icon(Icons.delete_forever),
-                      onPressed: () {},
-                    )
-                  ],
-                ),
-              );
-            },
-          );
-        },
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.update),
+                          onPressed: () {
+                            updateTaskMethod(state, index);
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete_forever),
+                          onPressed: () {
+                            context
+                                .read<TaskCubit>()
+                                .removeTask(task: state[index]);
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+              ],
+            );
+          },
+        ),
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -104,6 +115,7 @@ class _TaskScreenState extends State<TaskScreen> {
                   return AlertDialog(
                     title: const Text("Add Task"),
                     content: TextField(
+                      autofocus: true,
                       controller: controller,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
@@ -136,6 +148,7 @@ class _TaskScreenState extends State<TaskScreen> {
                   return AlertDialog(
                     title: const Text("Remove Task"),
                     content: TextField(
+                      autofocus: true,
                       controller: controller,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
@@ -170,15 +183,15 @@ class _TaskScreenState extends State<TaskScreen> {
     );
   }
 
-   // Update Task Method
-  Future<dynamic> updateTaskMethod(
-      List<String> state, int index) {
+  // Update Task Method
+  Future<dynamic> updateTaskMethod(List<String> state, int index) {
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: const Text("Add Task"),
           content: TextField(
+            autofocus: true,
             controller: controller,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
