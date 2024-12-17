@@ -1,4 +1,5 @@
 import 'package:block_lesson/counter_app/counter_cubit.dart';
+import 'package:block_lesson/counter_app/second_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,7 +10,7 @@ class CounterApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        mainAxisAlignment:  MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
             'You have pushed the button this many times:',
@@ -21,18 +22,21 @@ class CounterApp extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton:  Column(
-        mainAxisAlignment:  MainAxisAlignment.end,
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
             onPressed: () {
               context.read<CounterCubit>().increment();
             },
+            child: const Icon(Icons.add),
           ),
           FloatingActionButton(
             onPressed: () {
-              context.read<CounterCubit>().decrement();
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SecondScreen()));
             },
+            child: const Icon(Icons.navigate_next),
           ),
         ],
       ),
