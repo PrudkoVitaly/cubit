@@ -17,7 +17,7 @@ class ProductCubit extends Cubit<ProductState> {
         emit(ProductLoaded(products: products));
       });
     } catch (e) {
-      emit(ProductError(error: "Error loading products"));
+      emit(const ProductError(error: "Error loading products"));
     }
   }
 
@@ -42,10 +42,32 @@ class ProductCubit extends Cubit<ProductState> {
   void searchProduct(String value) {
     if (state is ProductLoaded) {
       final loadedState = state as ProductLoaded;
-      final updateProducts = loadedState.products.where((item) {
-        return item.title.toLowerCase().contains(value);
-      }).toList();
-      emit(ProductLoaded(products: updateProducts));
+
+      if (value.isEmpty) {
+        // emit(ProductLoaded(products: loadedState.products));
+        loadProducts();
+      } else {
+        final updateProducts = loadedState.products.where((item) {
+          return item.title.toLowerCase().contains(value);
+        }).toList();
+        emit(ProductLoaded(products: updateProducts));
+      }
     }
+  }
+
+  void filterProductsByPrice(
+      {required double minPrice, required double maxPrice}) {
+    if (state is ProductLoaded) {
+      final loadedState = state as ProductLoaded;
+      final filteredProducts = loadedState.products.where((product) {
+        return product.price >= minPrice && product.price <= maxPrice;
+      }).toList();
+
+      emit(ProductLoaded(products: filteredProducts));
+    }
+  }
+
+  void filterProductsByPriceClear() {
+    loadProducts();
   }
 }

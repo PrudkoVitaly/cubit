@@ -28,12 +28,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<CounterCubit>(create: (_) => CounterCubit()),
-        BlocProvider<LikeCubit>(create: (_) => LikeCubit()),
-        BlocProvider<StringCubit>(create: (_) => StringCubit()),
-        BlocProvider<TaskCubit>(create: (_) => TaskCubit()),
-        BlocProvider<CounterOneCubit>(create: (_) => CounterOneCubit()),
-        BlocProvider<TaskOneAppCubit>(create: (_) => TaskOneAppCubit()),
         BlocProvider<ProductCubit>(create: (_) => ProductCubit()),
       ],
       child: MaterialApp(

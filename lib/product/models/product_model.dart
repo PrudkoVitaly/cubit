@@ -12,13 +12,6 @@ class ProductModel {
   });
 }
 
-ProductModel bookOne = ProductModel(
-  title: "title",
-  description: "description",
-  price: 20,
-  isLiked: true,
-);
-
 List<ProductModel> products = [
   ProductModel(
     title: "Iphone",
