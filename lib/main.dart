@@ -15,6 +15,7 @@ import 'counter_cubit/counter_one_cubit.dart';
 import 'counter_cubit/counter_screen.dart';
 import 'hive_app/hive_setup/hive_setup.dart';
 import 'hive_app/screens/item_screen.dart';
+import 'http/http_main_screen.dart';
 import 'like/like_cubit.dart';
 import 'like/like_screen.dart';
 import 'like/test_screen.dart';
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
           // home: TaskOneScreen()),
-          home: ItemScreen()),
+          home: HttpMainScreen()),
     );
   }
 }
