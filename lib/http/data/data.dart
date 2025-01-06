@@ -12,13 +12,13 @@ class Person {
   String name;
   String avatar;
   String description;
-  String id;
+  String? id;
 
   Person({
     required this.name,
     required this.avatar,
     required this.description,
-    required this.id,
+    this.id,
   });
 
   factory Person.fromJson(Map<String, dynamic> json) => Person(
