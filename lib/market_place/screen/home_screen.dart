@@ -4,6 +4,7 @@ import '../body/category_body.dart';
 import '../body/previous_order_body.dart';
 import '../body/product_body.dart';
 import '../body/search_body.dart';
+import '../constants/app_constans.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -11,6 +12,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -22,8 +24,8 @@ class HomeScreen extends StatelessWidget {
                   _text(text: "Categories"),
                   const CategoryBody(),
                   _text(text: "Previous Order"),
-                  PreviousOrderBody(),
-                  _text(text: "Products"),
+                  const PreviousOrderBody(),
+                  _text(text: "Popular Deals"),
                 ],
               ),
             ),
@@ -37,7 +39,10 @@ class HomeScreen extends StatelessWidget {
   Widget _text({required String text}) {
     return Padding(
       padding: const EdgeInsets.only(left: 12, top: 12, bottom: 12),
-      child: Text(text),
+      child: Text(
+        text,
+        style: AppConstants.textTitle,
+      ),
     );
   }
 }

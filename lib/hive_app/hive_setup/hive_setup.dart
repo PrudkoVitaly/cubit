@@ -8,7 +8,7 @@ class HiveSetup {
 
   static Future<void> init() async {
     await Hive.initFlutter();
-    Hive.registerAdapter(ItemModelAdapter());
+    // Hive.registerAdapter(ItemModelAdapter());
     await Hive.openBox<ItemModel>(boxName);
   }
 }
