@@ -24,7 +24,7 @@ class CategoryBody extends StatelessWidget {
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                spacing: 15,
+                // spacing: 15,
                 children: [
                   Image.asset(CategoryItem.categoryList[index].image),
                   Text(

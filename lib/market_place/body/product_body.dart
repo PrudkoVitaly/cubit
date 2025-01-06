@@ -1,5 +1,9 @@
 import 'package:block_lesson/market_place/constants/app_constans.dart';
+import 'package:block_lesson/market_place/cubit/product_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+
 
 class ProductBody extends StatefulWidget {
   const ProductBody({super.key});
@@ -11,99 +15,123 @@ class ProductBody extends StatefulWidget {
 class _ProductBodyState extends State<ProductBody> {
   @override
   Widget build(BuildContext context) {
-    return SliverGrid(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        childAspectRatio: 0.66,
-      ),
-      delegate: SliverChildBuilderDelegate(
-        childCount: ProductItem.products.length,
-        (context, index) {
-          return Container(
-            margin: const EdgeInsets.only(left: 12, right: 12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: const BorderRadius.all(
-                Radius.circular(12),
-              ),
-              border: Border.all(color: const Color(0xFFE8EFF3), width: 1),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            ProductItem.products[index].isLiked =
-                                !ProductItem.products[index].isLiked;
-                          });
-                        },
-                        child: Icon(
-                          ProductItem.products[index].isLiked
-                              ? Icons.favorite
-                              : Icons.favorite_border,
-                          color: ProductItem.products[index].isLiked
-                              ? Colors.red
-                              : Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Image.asset(
-                    ProductItem.products[index].image,
-                    alignment: Alignment.center,
-                    height: 150,
-                    width: 150,
-                    fit: BoxFit.contain,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    ProductItem.products[index].title,
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Text(
-                        ProductItem.products[index].price,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const Spacer(),
-                      Row(
-                        children: [
-                          Text(
-                            ProductItem.products[index].rating,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Color(0xFFEA7173),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const Icon(
-                            Icons.star,
-                            color: Color(0xFFFFA902),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  // Quantity Product
-                  buttonAddProduct(),
-                  // Add Quantity Product
-                  // quantityButtonsAddProduct()
-                ],
-              ),
+    return BlocBuilder<ProductCubit, ProductState>(
+      builder: (context, state) {
+        if (state is ProductLoading) {
+          return const SliverToBoxAdapter(
+            child: Center(
+              child: CircularProgressIndicator(),
             ),
           );
-        },
-      ),
+        } else if (state is ProductError) {
+          return const SliverToBoxAdapter(
+            child: Center(
+              child: Text("No data"),
+            ),
+          );
+        } else if (state is ProductLoaded) {
+          return SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 10,
+              childAspectRatio: 0.66,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              childCount: state.products.length,
+              (context, index) {
+                return Container(
+                  margin: const EdgeInsets.only(left: 12, right: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(12),
+                    ),
+                    border:
+                        Border.all(color: const Color(0xFFE8EFF3), width: 1),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  ProductItem.products[index].isLiked =
+                                      !ProductItem.products[index].isLiked;
+                                });
+                              },
+                              child: Icon(
+                                ProductItem.products[index].isLiked
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: ProductItem.products[index].isLiked
+                                    ? Colors.red
+                                    : Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Image.asset(
+                          ProductItem.products[index].image,
+                          alignment: Alignment.center,
+                          height: 150,
+                          width: 150,
+                          fit: BoxFit.contain,
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          state.productsElement[index].title,
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Text(
+                              ProductItem.products[index].price,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const Spacer(),
+                            Row(
+                              children: [
+                                Text(
+                                  ProductItem.products[index].rating,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Color(0xFFEA7173),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const Icon(
+                                  Icons.star,
+                                  color: Color(0xFFFFA902),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        // Quantity Product
+                        buttonAddProduct(),
+                        // Add Quantity Product
+                        // quantityButtonsAddProduct()
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+        return const SliverToBoxAdapter(
+          child: Center(
+            child: Text("No data"),
+          ),
+        );
+      },
     );
   }
 

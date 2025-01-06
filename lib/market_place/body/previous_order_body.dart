@@ -9,7 +9,6 @@ class PreviousOrderBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       clipBehavior: Clip.hardEdge,
-      // height: 20,
       width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
@@ -49,12 +48,24 @@ class PreviousOrderBody extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
+                  // List of products in the order
                   Container(
                     width: double.infinity,
                     height: 63,
                     decoration: BoxDecoration(
                       color: AppConstants.greyColor,
                       borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Expanded(
+                      child: ListView.builder(
+                        itemCount: 3,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) => Container(
+                          margin: const EdgeInsets.only(right: 10),
+                          width: 50,
+                          height: 50,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -108,7 +119,7 @@ class PreviousOrderBody extends StatelessWidget {
           Container(
             width: 30,
             color: Colors.red,
-            padding:  const EdgeInsets.all(2),
+            padding: const EdgeInsets.all(2),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: "OrderAgain&".split("").map((char) {
