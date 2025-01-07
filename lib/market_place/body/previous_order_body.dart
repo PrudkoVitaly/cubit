@@ -56,15 +56,13 @@ class PreviousOrderBody extends StatelessWidget {
                       color: AppConstants.greyColor,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Expanded(
-                      child: ListView.builder(
-                        itemCount: 3,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) => Container(
-                          margin: const EdgeInsets.only(right: 10),
-                          width: 50,
-                          height: 50,
-                        ),
+                    child: ListView.builder(
+                      itemCount: 3,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) => Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        width: 50,
+                        height: 50,
                       ),
                     ),
                   ),

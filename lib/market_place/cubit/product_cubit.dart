@@ -14,7 +14,7 @@ class ProductCubit extends Cubit<ProductState> {
     try {
       emit(ProductLoading());
       final response = await http.get(Uri.parse(
-          "https://run.mocky.io/v3/bd1bee29-0946-431f-b8fe-f3f65f2c8372"));
+          "https://run.mocky.io/v3/6392e3da-13f3-4e0a-8b4b-2701dc0aa2bd"));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         final List<Product> products =
@@ -23,7 +23,7 @@ class ProductCubit extends Cubit<ProductState> {
           ProductLoaded(
             productsElement: products.first.products,
             selectCategory: products.first.category,
-            products: products,
+            category: products,
           ),
         );
       } else {
@@ -34,6 +34,25 @@ class ProductCubit extends Cubit<ProductState> {
     } catch (e) {
       emit(ProductError(error: "Error loading products $e"));
       print(e);
+    }
+  }
+
+  void selectCategory(String category) {
+    final currentState = state;
+
+    if (currentState is ProductLoaded) {
+      try {
+        final selectedProducts = currentState.category
+            .firstWhere((item) => item.category == category);
+        emit(
+          currentState.copywith(
+            selectCategory: category,
+            productsElement: selectedProducts.products,
+          ),
+        );
+      } catch (e) {
+        emit(ProductError(error: "Error loading products $e"));
+      }
     }
   }
 

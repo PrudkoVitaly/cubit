@@ -53,9 +53,9 @@ class ProductElement {
     like: json["like"],
     image: json["image"],
     title: json["title"],
-    price: json["price"],
-    rating: json["rating"]?.toDouble(),
-    quantity: json["quantity"],
+    price: (json["price"] as num).toInt(),
+    rating: json["rating"]?.toDouble() ?? 0.0,
+    quantity: (json["quantity"] as num).toInt(),
   );
 
   Map<String, dynamic> toJson() => {

@@ -37,7 +37,7 @@ class _ProductBodyState extends State<ProductBody> {
               childAspectRatio: 0.66,
             ),
             delegate: SliverChildBuilderDelegate(
-              childCount: state.products.length,
+              childCount: state.category.length,
               (context, index) {
                 return Container(
                   margin: const EdgeInsets.only(left: 12, right: 12),
@@ -88,7 +88,7 @@ class _ProductBodyState extends State<ProductBody> {
                         Row(
                           children: [
                             Text(
-                              ProductItem.products[index].price,
+                              "${state.productsElement[index].price}",
                               style: const TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16,
@@ -98,7 +98,7 @@ class _ProductBodyState extends State<ProductBody> {
                             Row(
                               children: [
                                 Text(
-                                  ProductItem.products[index].rating,
+                                  "${state.productsElement[index].rating}",
                                   style: const TextStyle(
                                     fontSize: 16,
                                     color: Color(0xFFEA7173),
