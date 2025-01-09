@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:block_lesson/market_place/model/cart_data.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import '../../product/models/product_model.dart';
@@ -71,37 +72,47 @@ class ProductCubit extends Cubit<ProductState> {
   }
 
   // Добавляем товар в корзину
-  void addToCart(int index) {
+  void addToCart(String title) {
     final currentState = state;
     if (currentState is ProductLoaded) {
-      final updatedQuantities = Map<int, int>.from(currentState.cartQuantities);
-      updatedQuantities[index] = 1;
-      emit(currentState.copyWith(cartQuantities: updatedQuantities));
+      final data = currentState.productsElement
+          .firstWhere((item) => item.title == title);
+      if(data != null) {
+        cartData.add(data);
+        emit(currentState.copyWith());
+      }  else {
+        emit(ProductError(error: "Product not add to cart"));
+      }
+
     }
+    // if (currentState is ProductLoaded) {
+    //   final updatedQuantities = Map<int, int>.from(currentState.cartQuantities);
+    //   updatedQuantities[index] = 1;
+    //   emit(currentState.copyWith(cartQuantities: updatedQuantities));
+    // }
   }
 
   // Увеличиваем количество товара
   void incrementQuantity(int index) {
     final currentState = state;
-    if (currentState is ProductLoaded) {
-      final updatedQuantities = Map<int, int>.from(currentState.cartQuantities);
-      updatedQuantities[index] = (updatedQuantities[index] ?? 0) + 1;
-      emit(currentState.copyWith(cartQuantities: updatedQuantities));
-    }
+    // if (currentState is ProductLoaded) {
+    //   final updatedQuantities = Map<int, int>.from(currentState.cartQuantities);
+    //   updatedQuantities[index] = (updatedQuantities[index] ?? 0) + 1;
+    //   emit(currentState.copyWith(cartQuantities: updatedQuantities));
+    // }
   }
 
   // Уменьшаем количество товара
   void decrementQuantity(int index) {
     final currentState = state;
-    if (currentState is ProductLoaded) {
-      final updatedQuantities = Map<int, int>.from(currentState.cartQuantities);
-      if (updatedQuantities[index] != null && updatedQuantities[index]! > 1) {
-        updatedQuantities[index] = updatedQuantities[index]! - 1;
-      } else {
-        updatedQuantities.remove(index);
-      }
-      emit(currentState.copyWith(cartQuantities: updatedQuantities));
-    }
+    // if (currentState is ProductLoaded) {
+    //   final updatedQuantities = Map<int, int>.from(currentState.cartQuantities);
+    //   if (updatedQuantities[index] != null && updatedQuantities[index]! > 1) {
+    //     updatedQuantities[index] = updatedQuantities[index]! - 1;
+    //   } else {
+    //     updatedQuantities.remove(index);
+    //   }
+    //   emit(currentState.copyWith(cartQuantities: updatedQuantities));
+    // }
   }
-
 }

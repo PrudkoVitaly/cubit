@@ -1,5 +1,6 @@
 import 'package:block_lesson/market_place/constants/app_constans.dart';
 import 'package:block_lesson/market_place/cubit/product_cubit.dart';
+import 'package:block_lesson/market_place/model/cart_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -37,7 +38,7 @@ class _ProductBodyState extends State<ProductBody> {
             delegate: SliverChildBuilderDelegate(
               childCount: state.category.length,
               (context, index) {
-                final quantity = state.cartQuantities[index] ?? 0;
+                // final quantity = state.cartQuantities[index] ?? 0;
                 return Container(
                   margin: const EdgeInsets.only(left: 12, right: 12),
                   decoration: BoxDecoration(
@@ -53,8 +54,8 @@ class _ProductBodyState extends State<ProductBody> {
                       Row(
                         children: [
                           Container(
-                            width: 198,
-                            height: 150,
+                            width: 179,
+                            height: 160,
                             decoration: BoxDecoration(
                               color: state.productsElement[index].like
                                   ? AppConstants.bgLikeColor
@@ -96,7 +97,6 @@ class _ProductBodyState extends State<ProductBody> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
                       Padding(
                         padding: const EdgeInsets.all(12),
                         child: Column(
@@ -104,7 +104,6 @@ class _ProductBodyState extends State<ProductBody> {
                             Text(
                               state.productsElement[index].title,
                             ),
-                            const SizedBox(height: 10),
                             Row(
                               children: [
                                 Text(
@@ -133,13 +132,14 @@ class _ProductBodyState extends State<ProductBody> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 10),
-                            quantity == 0
-                                ? buttonAddProduct(index)
-                                : quantityButtonsAddProduct(index, quantity),
+                            // buttonAddProduct(state.productsElement[index].title),
+                            // const SizedBox(height: 10),
+                            // quantity == 0
+                            //     ? buttonAddProduct(index)
+                            //     : quantityButtonsAddProduct(index, quantity),
 
                             // Quantity Product
-                            // buttonAddProduct(index),
+                            buttonAddProduct(state.productsElement[index].title),
                             // Add Quantity Product
                             // quantityButtonsAddProduct()
                           ],
@@ -161,10 +161,12 @@ class _ProductBodyState extends State<ProductBody> {
     );
   }
 
-  GestureDetector buttonAddProduct(int index) {
+  GestureDetector buttonAddProduct(String title) {
     return GestureDetector(
       onTap: () {
-        context.read<ProductCubit>().addToCart(index);
+        // context.read<ProductCubit>().addToCart(index);
+        context.read<ProductCubit>().addToCart(title);
+        print(cartData.length);
       },
       child: Container(
         width: double.infinity,
