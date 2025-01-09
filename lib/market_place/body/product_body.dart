@@ -3,8 +3,6 @@ import 'package:block_lesson/market_place/cubit/product_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
-
 class ProductBody extends StatefulWidget {
   const ProductBody({super.key});
 
@@ -34,11 +32,12 @@ class _ProductBodyState extends State<ProductBody> {
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               mainAxisSpacing: 10,
-              childAspectRatio: 0.66,
+              childAspectRatio: 0.76,
             ),
             delegate: SliverChildBuilderDelegate(
               childCount: state.category.length,
               (context, index) {
+                final quantity = state.cartQuantities[index] ?? 0;
                 return Container(
                   margin: const EdgeInsets.only(left: 12, right: 12),
                   decoration: BoxDecoration(
@@ -49,77 +48,104 @@ class _ProductBodyState extends State<ProductBody> {
                     border:
                         Border.all(color: const Color(0xFFE8EFF3), width: 1),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  ProductItem.products[index].isLiked =
-                                      !ProductItem.products[index].isLiked;
-                                });
-                              },
-                              child: Icon(
-                                ProductItem.products[index].isLiked
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: ProductItem.products[index].isLiked
-                                    ? Colors.red
-                                    : Colors.grey,
-                              ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 198,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              color: state.productsElement[index].like
+                                  ? AppConstants.bgLikeColor
+                                  : Colors.white,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(12)),
                             ),
-                          ],
-                        ),
-                        Image.asset(
-                          ProductItem.products[index].image,
-                          alignment: Alignment.center,
-                          height: 150,
-                          width: 150,
-                          fit: BoxFit.contain,
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          state.productsElement[index].title,
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Text(
-                              "${state.productsElement[index].price}",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const Spacer(),
-                            Row(
+                            child: Stack(
+                              alignment: Alignment.center,
                               children: [
-                                Text(
-                                  "${state.productsElement[index].rating}",
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Color(0xFFEA7173),
-                                    fontWeight: FontWeight.w600,
-                                  ),
+                                Image.asset(
+                                  ProductItem.products[index].image,
+                                  alignment: Alignment.center,
+                                  height: 150,
+                                  width: 150,
+                                  fit: BoxFit.contain,
                                 ),
-                                const Icon(
-                                  Icons.star,
-                                  color: Color(0xFFFFA902),
+                                Positioned(
+                                  top: 12,
+                                  left: 12,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      context
+                                          .read<ProductCubit>()
+                                          .likeProduct(index);
+                                    },
+                                    child: Icon(
+                                      state.productsElement[index].like
+                                          ? Icons.favorite
+                                          : Icons.favorite_border,
+                                      color: state.productsElement[index].like
+                                          ? Colors.red
+                                          : Colors.grey,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          children: [
+                            Text(
+                              state.productsElement[index].title,
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Text(
+                                  "${state.productsElement[index].price}",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "${state.productsElement[index].rating}",
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Color(0xFFEA7173),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    const Icon(
+                                      Icons.star,
+                                      color: Color(0xFFFFA902),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            quantity == 0
+                                ? buttonAddProduct(index)
+                                : quantityButtonsAddProduct(index, quantity),
+
+                            // Quantity Product
+                            // buttonAddProduct(index),
+                            // Add Quantity Product
+                            // quantityButtonsAddProduct()
                           ],
                         ),
-                        const SizedBox(height: 10),
-                        // Quantity Product
-                        buttonAddProduct(),
-                        // Add Quantity Product
-                        // quantityButtonsAddProduct()
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 );
               },
@@ -135,10 +161,10 @@ class _ProductBodyState extends State<ProductBody> {
     );
   }
 
-  GestureDetector buttonAddProduct() {
+  GestureDetector buttonAddProduct(int index) {
     return GestureDetector(
       onTap: () {
-        setState(() {});
+        context.read<ProductCubit>().addToCart(index);
       },
       child: Container(
         width: double.infinity,
@@ -162,47 +188,57 @@ class _ProductBodyState extends State<ProductBody> {
     );
   }
 
-  Row quantityButtonsAddProduct() {
+  Row quantityButtonsAddProduct(int index, int quantity) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Container(
-          width: 36,
-          height: 36,
-          decoration: const BoxDecoration(
-            color: AppConstants.redColor,
-            borderRadius: BorderRadius.all(
-              Radius.circular(12),
+        GestureDetector(
+          onTap: () {
+            context.read<ProductCubit>().decrementQuantity(index);
+          },
+          child: Container(
+            width: 36,
+            height: 36,
+            decoration: const BoxDecoration(
+              color: AppConstants.redColor,
+              borderRadius: BorderRadius.all(
+                Radius.circular(12),
+              ),
             ),
-          ),
-          child: const Center(
-            child: Icon(
-              Icons.remove,
-              color: Colors.white,
+            child: const Center(
+              child: Icon(
+                Icons.remove,
+                color: Colors.white,
+              ),
             ),
           ),
         ),
-        const Text(
-          "2",
-          style: TextStyle(
+        Text(
+          "$quantity",
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: AppConstants.greenColor,
           ),
         ),
-        Container(
-          width: 36,
-          height: 36,
-          decoration: const BoxDecoration(
-            color: AppConstants.greenColor,
-            borderRadius: BorderRadius.all(
-              Radius.circular(12),
+        GestureDetector(
+          onTap: () {
+            context.read<ProductCubit>().incrementQuantity(index);
+          },
+          child: Container(
+            width: 36,
+            height: 36,
+            decoration: const BoxDecoration(
+              color: AppConstants.greenColor,
+              borderRadius: BorderRadius.all(
+                Radius.circular(12),
+              ),
             ),
-          ),
-          child: const Center(
-            child: Icon(
-              Icons.add,
-              color: Colors.white,
+            child: const Center(
+              child: Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
             ),
           ),
         ),
@@ -233,7 +269,8 @@ class ProductItem {
   static final List<ProductItem> products = [
     ProductItem(
       quantity: '0',
-      image: 'images/strawberries_images.png',
+      // image: 'images/strawberries_images.png',
+      image: 'images/strawberries.png',
       title: 'Strawberries',
       price: '₹ 10',
       offer: '5% off',

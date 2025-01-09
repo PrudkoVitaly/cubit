@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
+import '../../product/models/product_model.dart';
 import '../model/product_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -45,7 +47,7 @@ class ProductCubit extends Cubit<ProductState> {
         final selectedProducts = currentState.category
             .firstWhere((item) => item.category == category);
         emit(
-          currentState.copywith(
+          currentState.copyWith(
             selectCategory: category,
             productsElement: selectedProducts.products,
           ),
@@ -58,7 +60,48 @@ class ProductCubit extends Cubit<ProductState> {
 
   void searchProductByName(String name) {}
 
-  void likeProduct(int index) {}
+  void likeProduct(int index) {
+    final currentState = state;
+    if (currentState is ProductLoaded) {
+      final likedProducts = currentState.productsElement;
+      likedProducts[index].like = !likedProducts[index].like;
+      // currentState.productsElement[index].bgColor = currentState.productsElement[index].bgColor == Colors.white ? Colors.red : Colors.white;
+      emit(currentState.copyWith(productsElement: likedProducts));
+    }
+  }
 
-  void addToCart(int index) {}
+  // Добавляем товар в корзину
+  void addToCart(int index) {
+    final currentState = state;
+    if (currentState is ProductLoaded) {
+      final updatedQuantities = Map<int, int>.from(currentState.cartQuantities);
+      updatedQuantities[index] = 1;
+      emit(currentState.copyWith(cartQuantities: updatedQuantities));
+    }
+  }
+
+  // Увеличиваем количество товара
+  void incrementQuantity(int index) {
+    final currentState = state;
+    if (currentState is ProductLoaded) {
+      final updatedQuantities = Map<int, int>.from(currentState.cartQuantities);
+      updatedQuantities[index] = (updatedQuantities[index] ?? 0) + 1;
+      emit(currentState.copyWith(cartQuantities: updatedQuantities));
+    }
+  }
+
+  // Уменьшаем количество товара
+  void decrementQuantity(int index) {
+    final currentState = state;
+    if (currentState is ProductLoaded) {
+      final updatedQuantities = Map<int, int>.from(currentState.cartQuantities);
+      if (updatedQuantities[index] != null && updatedQuantities[index]! > 1) {
+        updatedQuantities[index] = updatedQuantities[index]! - 1;
+      } else {
+        updatedQuantities.remove(index);
+      }
+      emit(currentState.copyWith(cartQuantities: updatedQuantities));
+    }
+  }
+
 }

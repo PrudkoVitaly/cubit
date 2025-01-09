@@ -14,7 +14,9 @@ final class ProductLoading extends ProductState {}
 final class ProductLoaded extends ProductState {
   final List<ProductModel> products;
 
-  const ProductLoaded({required this.products});
+  const ProductLoaded({
+    required this.products,
+  });
 
   @override
   List<Object> get props => [products];

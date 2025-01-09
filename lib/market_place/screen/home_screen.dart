@@ -17,18 +17,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   Widget buildNavBarItem(Widget icon, int index) {
     return InkWell(
       onTap: () {
-        _onItemTapped(index);
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -38,9 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(
             'Item $index',
             style: TextStyle(
-              color: _selectedIndex == index
-                  ? const Color(0xFF7861FF)
-                  : Colors.black87,
             ),
           ),
         ],
@@ -89,39 +78,60 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      floatingActionButton: ClipOval(
-        child: Material(
-          shape: const CircleBorder(),
-          borderOnForeground: true,
-          color: AppConstants.yellowColor,
-          elevation: 10,
-          child: InkWell(
+      floatingActionButton: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            right: -50,
+            top: 0,
             child: Container(
-              width: 76,
-              height: 76,
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
-                color: AppConstants.yellowColor,
+                color: AppConstants.redColor,
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.5),
-                    blurRadius: 10,
-                    spreadRadius: 0,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
               ),
-              child: Container(
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('images/card_bottom_icon.png'),
+              child: Text(
+               "1",
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+          ClipOval(
+            child: Material(
+              shape: const CircleBorder(),
+              borderOnForeground: true,
+              color: AppConstants.yellowColor,
+              elevation: 10,
+              child: InkWell(
+                child: Container(
+                  width: 76,
+                  height: 76,
+                  decoration: BoxDecoration(
+                    color: AppConstants.yellowColor,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        blurRadius: 10,
+                        spreadRadius: 0,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('images/card_bottom_icon.png'),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
@@ -137,5 +147,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-
-
