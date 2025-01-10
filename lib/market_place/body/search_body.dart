@@ -1,4 +1,7 @@
+import 'package:block_lesson/counter_app/counter_app.dart';
+import 'package:block_lesson/market/feature/cubit/product_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../constants/app_constans.dart';
 
@@ -12,6 +15,9 @@ class SearchBody extends StatelessWidget {
       child: SizedBox(
         height: 54,
         child: TextField(
+          onChanged: (value) {
+            context.read<ProductCubit>().searchProduct(value);
+          },
           decoration: InputDecoration(
             hintText: "Search Anything...",
             hintStyle:  const TextStyle(

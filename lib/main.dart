@@ -1,10 +1,11 @@
 import 'package:block_lesson/hive_app/cubit/item_cubit.dart';
-import 'package:block_lesson/market_place/cubit/product_cubit.dart';
+// import 'package:block_lesson/market_place/cubit/product_cubit.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'market_place/screen/home_screen.dart';
+import 'market/feature/cubit/product_cubit.dart';
+import 'market/feature/screens/main_screen.dart';
 
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -19,8 +20,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<ProductCubit>(create: (_) => ProductCubit()..getProducts()),
+        // BlocProvider<ProductCubit>(create: (_) => ProductCubit()..getProducts()),
         BlocProvider<ItemCubit>(create: (_) => ItemCubit()),
+        BlocProvider<ProductCubit>(create: (_) => ProductCubit()..fetchProducts()),
       ],
       child: MaterialApp(
           title: 'Flutter Demo',
@@ -30,7 +32,8 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
           ),
           // home: TaskOneScreen()),
-          home: HomeScreen()),
+          // home: HomeScreen()),
+          home: MainScree()),
     );
   }
 }
