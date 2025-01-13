@@ -55,7 +55,8 @@ class ProductBody extends StatelessWidget {
     );
   }
 
-  Widget _buildProductCard(BuildContext context, int index, ProductElement product) {
+  Widget _buildProductCard(
+      BuildContext context, int index, ProductElement product) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12),
       decoration: _cardDecoration(),
@@ -68,7 +69,10 @@ class ProductBody extends StatelessWidget {
               children: [
                 Text(product.title),
                 _buildPriceAndRating(product),
-                _buildAddToCartButton(product),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: _buildAddToCartButton(product),
+                ),
               ],
             ),
           ),
@@ -77,7 +81,8 @@ class ProductBody extends StatelessWidget {
     );
   }
 
-  Widget _buildProductImage(ProductElement product, int index, BuildContext context) {
+  Widget _buildProductImage(
+      ProductElement product, int index, BuildContext context) {
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -145,29 +150,136 @@ class ProductBody extends StatelessWidget {
   }
 
   Widget _buildAddToCartButton(ProductElement product) {
-    return GestureDetector(
-      onTap: () {},
-      child: Container(
-        width: double.infinity,
-        height: 36,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(12),
+    return BlocBuilder<ProductCubit, ProductState>(
+      builder: (context, state) {
+        if (state is ProductSuccess) {
+          // Проверяем, есть ли товар в корзине
+          final cartItem = state.cart.firstWhere(
+            (item) => item.title == product.title,
+            orElse: () => product.copyWith(quantity: 0),
+          );
+
+          // Если товар добавлен в корзину (quantity > 0)
+          if (cartItem.quantity > 0) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Кнопка "-"
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: const BoxDecoration(
+                    color: AppConstants.redColor,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(12),
+                    ),
+                  ),
+                  child: IconButton(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(0),
+                    onPressed: () {
+                      final index = state.cart
+                          .indexWhere((item) => item.title == product.title);
+                      if (index != -1) {
+                        context
+                            .read<ProductCubit>()
+                            .decrementCartQuantity(index);
+                      }
+                    },
+                    icon: const Icon(Icons.remove, color: Colors.white),
+                  ),
+                ),
+
+                // Количество товара
+                Text(
+                  '${cartItem.quantity}',
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+
+                // Кнопка "+"
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: const BoxDecoration(
+                    color: AppConstants.greenColor,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(12),
+                    ),
+                  ),
+                  child: Center(
+                    child: IconButton(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(0),
+                      onPressed: () {
+                        final index = state.cart
+                            .indexWhere((item) => item.title == product.title);
+                        if (index != -1) {
+                          context
+                              .read<ProductCubit>()
+                              .incrementCartQuantity(index);
+                        }
+                      },
+                      icon: const Icon(Icons.add, color: Colors.white),
+                    ),
+                  ),
+                )
+              ],
+            );
+          }
+        }
+
+        // Если товар ещё не добавлен в корзину
+        return GestureDetector(
+          onTap: () {
+            context.read<ProductCubit>().addToCart(product);
+          },
+          child: Container(
+            width: double.infinity,
+            height: 36,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.all(Radius.circular(12)),
+              border: Border.all(color: AppConstants.yellowColor, width: 1),
+            ),
+            child: const Text(
+              "Add to cart",
+              style: TextStyle(
+                color: AppConstants.yellowColor,
+                fontSize: 16,
+              ),
+            ),
           ),
-          border: Border.all(color: AppConstants.yellowColor, width: 1),
-        ),
-        child: const Text(
-          "Add to cart",
-          style: TextStyle(
-            color: AppConstants.yellowColor,
-            fontSize: 16,
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
+
+  // Widget _buildAddToCartButton(ProductElement product) {
+  //   return GestureDetector(
+  //     onTap: () {},
+  //     child: Container(
+  //       width: double.infinity,
+  //       height: 36,
+  //       alignment: Alignment.center,
+  //       decoration: BoxDecoration(
+  //         color: Colors.white,
+  //         borderRadius: const BorderRadius.all(
+  //           Radius.circular(12),
+  //         ),
+  //         border: Border.all(color: AppConstants.yellowColor, width: 1),
+  //       ),
+  //       child: const Text(
+  //         "Add to cart",
+  //         style: TextStyle(
+  //           color: AppConstants.yellowColor,
+  //           fontSize: 16,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   BoxDecoration _cardDecoration() {
     return BoxDecoration(
