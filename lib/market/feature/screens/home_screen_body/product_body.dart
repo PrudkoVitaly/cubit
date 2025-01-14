@@ -106,6 +106,7 @@ class ProductBody extends StatelessWidget {
           left: 12,
           child: GestureDetector(
             onTap: () {
+              // context.read<ProductCubit>().toggleLike(product);
               context.read<ProductCubit>().toggleLike(product);
             },
             child: Icon(

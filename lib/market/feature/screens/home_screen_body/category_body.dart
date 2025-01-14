@@ -10,8 +10,10 @@ class CategoryBody extends StatelessWidget {
     super.key,
   });
 
+
   @override
   Widget build(BuildContext context) {
+
     return BlocBuilder<ProductCubit, ProductState>(
       builder: (context, state) {
         if (state is ProductSuccess) {
@@ -34,9 +36,14 @@ class CategoryBody extends StatelessWidget {
 
   Widget _buildCategoryItem(
       int index, List<String> categories, BuildContext context) {
+    final Map<String, Color> categoryColors = {
+      'Fruits': AppConstants.greenColor,
+      'Vegetables': AppConstants.blueColor,
+      'Dairy': AppConstants.pinkColor,
+      'Bakery': AppConstants.violetColor,
+      'Beverages': Colors.purpleAccent,
+    };
     final category = categories[index];
-
-    // Получаем доступ к ProductCubit, чтобы взять categoryImage
     final productCubit = context.read<ProductCubit>();
     final product = productCubit.state is ProductSuccess
         ? (productCubit.state as ProductSuccess)
@@ -56,7 +63,7 @@ class CategoryBody extends StatelessWidget {
           width: 90,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: Colors.blue,
+            color: categoryColors[category],
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -78,7 +85,7 @@ class CategoryBody extends StatelessWidget {
                 category,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 12,
+                  fontSize: 14,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -88,40 +95,4 @@ class CategoryBody extends StatelessWidget {
       ),
     );
   }
-
-  // Widget _buildCategoryItem(
-  //     int index, List<String> categories, BuildContext context) {
-  //   final category = categories[index];
-  //   return Padding(
-  //     padding: EdgeInsets.only(
-  //       right: 12,
-  //       left: index == 0 ? 12 : 0,
-  //     ),
-  //     child: GestureDetector(
-  //       onTap: () => context.read<ProductCubit>().selectCategory(category),
-  //       child: Container(
-  //         height: 90,
-  //         width: 90,
-  //         decoration: BoxDecoration(
-  //           borderRadius: BorderRadius.circular(10),
-  //           color: Colors.blue,
-  //         ),
-  //         child: Column(
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: [
-  //             const SizedBox(height: 8),
-  //             Text(
-  //               category,
-  //               style: const TextStyle(
-  //                 color: Colors.white,
-  //                 fontSize: 12,
-  //               ),
-  //               textAlign: TextAlign.center,
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 }

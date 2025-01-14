@@ -1,10 +1,10 @@
 import 'package:block_lesson/market/feature/screens/home_screen_body/category_body.dart';
+import 'package:block_lesson/market/feature/screens/home_screen_body/previous_order_body.dart';
 import 'package:block_lesson/market/feature/screens/home_screen_body/product_body.dart';
 import 'package:flutter/material.dart';
-
-import '../../../market_place/body/previous_order_body.dart';
 import '../../../market_place/body/search_body.dart';
 import '../../../market_place/constants/app_constans.dart';
+import 'home_screen_body/location_body.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -17,6 +17,7 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const LocationBody(),
               const SearchBody(),
               _sectionTitle("Categories"),
               const CategoryBody(),

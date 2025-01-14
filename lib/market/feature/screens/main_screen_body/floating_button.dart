@@ -1,4 +1,6 @@
+import 'package:block_lesson/market/feature/cubit/product_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../market_place/constants/app_constans.dart';
 
@@ -44,16 +46,26 @@ class FloatingButton extends StatelessWidget {
               ),
             ),
           ),
-          const Align(
-            alignment: Alignment.topRight,
-            child: CircleAvatar(
-              radius: 16,
-              backgroundColor: AppConstants.redColor,
-              child: Text(
-                '10', // Example cart count
-                style: TextStyle(color: Colors.white, fontSize: 12),
-              ),
-            ),
+          BlocBuilder<ProductCubit, ProductState>(
+            builder: (BuildContext context, state) {
+              int cartCount = 0;
+
+              if (state is ProductSuccess) {
+                cartCount =
+                    state.cart.fold<int>(0, (sum, item) => sum + item.quantity);
+              }
+              return  Align(
+                alignment: Alignment.topRight,
+                child: CircleAvatar(
+                  radius: 16,
+                  backgroundColor: AppConstants.redColor,
+                  child: Text(
+                    cartCount.toString(), // Example cart count
+                    style: TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),

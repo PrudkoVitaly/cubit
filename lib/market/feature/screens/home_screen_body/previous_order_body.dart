@@ -164,7 +164,7 @@ class PreviousOrderBody extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
           decoration: const BoxDecoration(
-            color: AppConstants.greenColor,
+            color: AppConstants.redColor,
             borderRadius: BorderRadius.only(),
           ),
           child: const Text(

@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:block_lesson/market/feature/data/product_data.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+
 import 'package:http/http.dart' as http;
+
 part 'product_state.dart';
 
 class ProductCubit extends Cubit<ProductState> {
@@ -12,7 +13,8 @@ class ProductCubit extends Cubit<ProductState> {
 
   Future<void> fetchProducts() async {
     emit(ProductLoading());
-    const url = "https://run.mocky.io/v3/6392e3da-13f3-4e0a-8b4b-2701dc0aa2bd";
+    // const url = "https://run.mocky.io/v3/6392e3da-13f3-4e0a-8b4b-2701dc0aa2bd";
+    const url = "https://run.mocky.io/v3/969b6395-932d-4161-95b8-870591a5ceac";
 
     try {
       final response = await http.get(Uri.parse(url));
@@ -20,15 +22,18 @@ class ProductCubit extends Cubit<ProductState> {
         final data = json.decode(response.body) as List;
 
         final products = data.map((e) => Product.fromJson(e)).toList();
-        final allProducts = products.expand((product) => product.products).toList();
+        final allProducts =
+            products.expand((product) => product.products).toList();
         emit(ProductSuccess(
           products: products,
           filteredProducts: allProducts,
           selectedCategory: '',
           cart: [],
+          likedProducts: [],
         ));
       } else {
-        emit(ProductError(message: "Failed to fetch products: ${response.statusCode}"));
+        emit(ProductError(
+            message: "Failed to fetch products: ${response.statusCode}"));
       }
     } catch (e) {
       emit(ProductError(message: "An error occurred: $e"));
@@ -54,32 +59,55 @@ class ProductCubit extends Cubit<ProductState> {
       final filteredProducts = currentState.products
           .expand((product) => product.products)
           .where((element) =>
-          element.title.toLowerCase().contains(query.toLowerCase()))
+              element.title.toLowerCase().contains(query.toLowerCase()))
           .toList();
       emit(currentState.copyWith(filteredProducts: filteredProducts));
     }
   }
 
+  // Метод для добавления/удаления товара из избранного
   void toggleLike(ProductElement product) {
     final currentState = state;
+
     if (currentState is ProductSuccess) {
+      // Обновляем список всех товаров
       final updatedProducts = currentState.filteredProducts.map((item) {
         if (item.title == product.title) {
-          return item.copyWith(like: !item.like);
+          return item.copyWith(like: !item.like);  // Переключаем лайк
         }
         return item;
       }).toList();
 
-      emit(currentState.copyWith(filteredProducts: updatedProducts));
+      // Обновляем список избранных товаров
+      List<ProductElement> updatedLikedProducts = updatedProducts.where((item) => item.like).toList();
+
+      // Печатаем в консоль для отладки
+      print('Updated liked products: ${updatedLikedProducts.map((e) => e.title).toList()}');
+
+      // Обновляем состояние с новыми списками
+      emit(currentState.copyWith(
+        filteredProducts: updatedProducts,     // Обновляем список всех товаров
+        likedProducts: updatedLikedProducts,   // Обновляем список избранных товаров
+      ));
     }
   }
 
-  // void toggleLike(int index) {
+
+
+
+
+
+  // void toggleLike(ProductElement product) {
   //   final currentState = state;
   //   if (currentState is ProductSuccess) {
-  //     final filteredProducts = List<ProductElement>.from(currentState.filteredProducts);
-  //     filteredProducts[index].like = !filteredProducts[index].like;
-  //     emit(currentState.copyWith(filteredProducts: filteredProducts));
+  //     final updatedProducts = currentState.filteredProducts.map((item) {
+  //       if (item.title == product.title) {
+  //         return item.copyWith(like: !item.like);
+  //       }
+  //       return item;
+  //     }).toList();
+  //
+  //     emit(currentState.copyWith(filteredProducts: updatedProducts));
   //   }
   // }
 
@@ -87,7 +115,8 @@ class ProductCubit extends Cubit<ProductState> {
     final currentState = state;
     if (currentState is ProductSuccess) {
       final cart = List<ProductElement>.from(currentState.cart);
-      final existingProduct = cart.indexWhere((item) => item.title == product.title);
+      final existingProduct =
+          cart.indexWhere((item) => item.title == product.title);
 
       if (existingProduct == -1) {
         cart.add(product.copyWith(quantity: 1));
