@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:block_lesson/hive_app/cubit/item_cubit.dart';
+import 'bloc_lessons/counter/bloc/counter_bloc.dart';
+import 'bloc_lessons/counter/ui/counter_screen.dart';
+import 'bloc_lessons/task/bloc/task_bloc.dart';
+import 'bloc_lessons/task/presentation/task_main.dart';
 import 'market/feature/cubit/product_cubit.dart';
 import 'market/feature/screens/home_screen.dart';
 import 'market/feature/screens/main_screen.dart';
@@ -30,6 +34,8 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<ItemCubit>(create: (_) => ItemCubit()),
         // BlocProvider для ProductCubit
         BlocProvider<ProductCubit>(create: (_) => ProductCubit()..fetchProducts()),
+        BlocProvider<CounterBloc>(create: (_) => CounterBloc()),
+        BlocProvider<TaskBloc>(create: (_) => TaskBloc()..add(FetchTasksEvent())),
       ],
       child: MaterialApp(
           title: 'Flutter Demo',
@@ -48,7 +54,9 @@ class _MyAppState extends State<MyApp> {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const MainScree(),
+        // home: const MainScree(),
+        // home: const CounterScreen(),
+        home: const TaskMain(),
       ),
     );
   }

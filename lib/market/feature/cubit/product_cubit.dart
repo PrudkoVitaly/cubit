@@ -13,8 +13,7 @@ class ProductCubit extends Cubit<ProductState> {
 
   Future<void> fetchProducts() async {
     emit(ProductLoading());
-    // const url = "https://run.mocky.io/v3/6392e3da-13f3-4e0a-8b4b-2701dc0aa2bd";
-    const url = "https://run.mocky.io/v3/969b6395-932d-4161-95b8-870591a5ceac";
+    const url = "https://run.mocky.io/v3/814c1239-a37f-4c7b-b03b-cb398489e3a8";
 
     try {
       final response = await http.get(Uri.parse(url));

@@ -70,7 +70,7 @@ class ProductBody extends StatelessWidget {
                 Text(product.title),
                 _buildPriceAndRating(product),
                 Padding(
-                  padding: const EdgeInsets.only(top: 16),
+                  padding: const EdgeInsets.only(top: 4),
                   child: _buildAddToCartButton(product),
                 ),
               ],

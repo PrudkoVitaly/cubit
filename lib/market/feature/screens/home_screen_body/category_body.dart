@@ -1,5 +1,4 @@
 import 'package:block_lesson/market/feature/cubit/product_cubit.dart';
-import 'package:block_lesson/market/feature/data/product_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -37,11 +36,11 @@ class CategoryBody extends StatelessWidget {
   Widget _buildCategoryItem(
       int index, List<String> categories, BuildContext context) {
     final Map<String, Color> categoryColors = {
-      'Fruits': AppConstants.greenColor,
-      'Vegetables': AppConstants.blueColor,
-      'Dairy': AppConstants.pinkColor,
-      'Bakery': AppConstants.violetColor,
-      'Beverages': Colors.purpleAccent,
+      'Groceries': AppConstants.greenColor,
+      'Appliances': AppConstants.blueColor,
+      'Furniture': AppConstants.pinkColor,
+      'Electronics': AppConstants.violetColor,
+      'Clothing': Colors.purpleAccent,
     };
     final category = categories[index];
     final productCubit = context.read<ProductCubit>();
